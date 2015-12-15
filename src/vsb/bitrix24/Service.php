@@ -6,19 +6,19 @@ class Service{
 		/**
 		 * client_id приложения
 		 */
-		'CLIENT_ID' => 'app.00000000000000.00000000',
+		'CLIENT_ID' => 'local.566973a3ec7410.58002193',
 		/**
 		 * client_secret приложения
 		 */
-		'CLIENT_SECRET' => '00000000000000000000000000000000',
+		'CLIENT_SECRET' => '802232f8073927f1b07b812c4b9a4b3f',
 		/**
 		 * относительный путь приложения на сервере
 		 */
-		'PATH' => '/your_path/',
+		'PATH' => '/bitrix24/',
 		/**
 		 * полный адрес к приложения
 		 */
-		'REDIRECT_URI' => 'http://your.host/your_path/',
+		'REDIRECT_URI' => 'http://bitrix24.portal.bs2/bitrix24',
 		/**
 		 * scope приложения
 		 */
@@ -29,7 +29,13 @@ class Service{
 		 */
 		'PROTOCOL' => "https",
 
-		'EVENT_HANDLER' => 'http://your.host/your_path/'
+		'EVENT_HANDLER' => 'http://bitrix24.portal.bs2/bitrix24/event',
+
+		'domain' => 'oookbrenessans.bitrix24.ru',
+
+		'authenticated' => false,
+
+		''
 	];
 	private static $service;
 	/**
@@ -120,118 +126,6 @@ class Service{
 		//  /refresh auth
 		}
 
-		if(!isset($_SESSION["query_data"])){
-		// *
-			if($error)
-			{
-				echo '<b>'.$error.'</b>';
-			}
-		?>
-		<?
-
-		// *
-
-		}
-		else {
-		// *
-
-			if(time() > $_SESSION["query_data"]["ts"] + $_SESSION["query_data"]["expires_in"])
-			{
-				echo "<b>Авторизационные данные истекли</b>";
-			}
-			else
-			{
-				echo "Авторизационные данные истекут через ".($_SESSION["query_data"]["ts"] + $_SESSION["query_data"]["expires_in"] - time())." секунд";
-			}
-		?>
-
-		<ul>
-			<li><a href="<?=PATH?>?test=user.current">Информация о пользователе</a>
-			<li><a href="<?=PATH?>?test=user.update">Загрузить новую аватарку пользователя</a>
-			<li><a href="<?=PATH?>?test=log.blogpost.add">Опубликовать запись в Живой Ленте</a>
-			<li><a href="<?=PATH?>?test=event.bind">Установить обработчик события</a>
-		</ul>
-
-		<a href="<?=PATH?>?refresh=1">Обновить данные авторизации</a><br />
-		<a href="<?=PATH?>?clear=1">Очистить данные авторизации</a><br />
-
-		<?
-			$test = isset($_REQUEST["test"]) ? $_REQUEST["test"] : "";
-			switch($test)
-			{
-				case 'user.current': // test: user info
-
-					$data = $this->call($_SESSION["query_data"]["domain"], "user.current", array(
-						"auth" => $_SESSION["query_data"]["access_token"])
-					);
-
-				break;
-
-				case 'user.update': // test batch&files
-
-					$fileContent = file_get_contents(dirname(__FILE__)."/images/MM35_PG189a.jpg");
-
-					$batch = array(
-						'user' => 'user.current',
-						'user_update' => 'user.update?'
-							.http_build_$this->query(array(
-								'ID' => '$result[user][ID]',
-								'PERSONAL_PHOTO' => array(
-									'avatar.jpg',
-									base64_encode($fileContent)
-								)
-							))
-					);
-
-					$data = $this->call($_SESSION["query_data"]["domain"], "batch", array(
-						"auth" => $_SESSION["query_data"]["access_token"],
-						"cmd" => $batch,
-					));
-
-				break;
-
-				case 'event.bind': // bind event handler
-
-					$data = $this->call($_SESSION["query_data"]["domain"], "event.bind", array(
-						"auth" => $_SESSION["query_data"]["access_token"],
-						"EVENT" => "ONCRMLEADADD",
-						"HANDLER" =>$this->options['EVENT_HANDLER'],
-					));
-
-				break;
-
-				case 'log.blogpost.add': // add livefeed entry
-
-					$fileContent = file_get_contents(dirname(__FILE__)."/images/MM35_PG189a.jpg");
-
-					$data = $this->call($_SESSION["query_data"]["domain"], "log.blogpost.add", array(
-		 				"auth" => $_SESSION["query_data"]["access_token"],
-						"POST_TITLE" => "Hello world!",
-						"POST_MESSAGE" => "Goodbye, cruel world :-(",
-						"FILES" => array(
-							array(
-								'minotaur.jpg',
-								base64_encode($fileContent)
-							)
-						),
-
-		 			));
-
-		 		break;
-
-
-				default:
-
-					$data = $_SESSION["query_data"];
-
-				break;
-			}
-
-			echo '<pre>'; var_export($data); echo '</pre>';
-
-			// *
-		}
-
 	}
 	public static function GetService($o=[]){
 		if (null !== self::$service) {
@@ -294,7 +188,7 @@ class Service{
 	 */
 	public function $this->call($method, $params)
 	{
-		return $this->$this->query("POST",$this->options['PROTOCOL']."://".$this->options['domain']."/rest/".$method, $params);
+		return $this->query("POST",$this->options['PROTOCOL']."://".$this->options['domain']."/rest/".$method, $params);
 	}
 }
 
