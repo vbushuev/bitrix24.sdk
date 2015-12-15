@@ -1,0 +1,19 @@
+{
+    "name": "vsb/bitrix24-sdk",
+    "description": "Bitrix24 oauth sdk lib",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "vbushuev",
+            "email": "v.bushuev.co@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "repositories":[
+        {
+            "type":"git",
+            "url":"https://github.com/vbushuev/bitrix24.sdk"
+        }
+    ]
+}
